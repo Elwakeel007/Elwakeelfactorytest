@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام إدارة الأموال</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="ai/ai.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body>
+  <div id="notification-container"></div>
+  <div class="app-container">
+    <nav class="sidebar">
+      <div class="logo"><i class="fas fa-wallet"></i><span>إدارة الأموال</span></div>
+      <ul class="nav-links">
+        <li><a href="#" data-page="home-page" class="active"><i class="fas fa-home"></i> الرئيسية</a></li>
+        <li><a href="#" data-page="incomes-page"><i class="fas fa-coins"></i> الإيرادات</a></li>
+        <li><a href="#" data-page="expenses-page"><i class="fas fa-credit-card"></i> المصروفات</a></li>
+        <li><a href="#" data-page="goal-page"><i class="fas fa-bullseye"></i> الهدف المالي</a></li>
+        <li><a href="#" data-page="analysis-page"><i class="fas fa-chart-line"></i> التحليل المالي</a></li>
+        <li><a href="#" data-page="settings-page"><i class="fas fa-cog"></i> الإعدادات</a></li>
+      </ul>
+    </nav>
+    <main class="main-content">
+      <section id="home-page" class="page-section active-section">
+        <header><h2>الرئيسية</h2></header>
+        <div class="content-container">
+          <div class="summary-cards">
+            <div class="summary-card">
+              <i class="fas fa-coins"></i>
+              <h3>إجمالي الإيرادات</h3>
+              <p id="total-incomes">0</p>
+            </div>
+            <div class="summary-card">
+              <i class="fas fa-credit-card"></i>
+              <h3>إجمالي المصروفات</h3>
+              <p id="total-expenses">0</p>
+            </div>
+            <div class="summary-card">
+              <i class="fas fa-balance-scale"></i>
+              <h3>الفرق</h3>
+              <p id="balance">0</p>
+            </div>
+            <div class="summary-card">
+              <i class="fas fa-chart-line"></i>
+              <h3>متوسط الدخل اليومي</h3>
+              <p id="avg-income">0</p>
+            </div>
+            <div class="summary-card">
+              <i class="fas fa-chart-bar"></i>
+              <h3>متوسط المصروف اليومي</h3>
+              <p id="avg-expense">0</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="incomes-page" class="page-section">
+        <header><h2>الإيرادات</h2><button id="add-income-btn"><i class="fas fa-plus"></i></button></header>
+        <div class="content-container">
+          <div class="search-wrapper">
+            <input type="text" id="incomes-search" class="table-search" placeholder="ابحث في الإيرادات…">
+            <button type="button" id="incomes-clear-btn" class="search-clear-btn"><i class="fas fa-times"></i></button>
+            <button type="button" id="incomes-voice-btn" class="search-voice-btn"><i class="fas fa-microphone"></i></button>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead><tr><th>التاريخ</th><th>المبلغ</th><th>الوصف</th><th>إجراءات</th></tr></thead>
+              <tbody id="incomes-list"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+      <section id="expenses-page" class="page-section">
+        <header><h2>المصروفات</h2><button id="add-expense-btn"><i class="fas fa-plus"></i></button></header>
+        <div class="content-container">
+          <div class="search-wrapper">
+            <input type="text" id="expenses-search" class="table-search" placeholder="ابحث في المصروفات…">
+            <button type="button" id="expenses-clear-btn" class="search-clear-btn"><i class="fas fa-times"></i></button>
+            <button type="button" id="expenses-voice-btn" class="search-voice-btn"><i class="fas fa-microphone"></i></button>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead><tr><th>التاريخ</th><th>المبلغ</th><th>الوصف</th><th>إجراءات</th></tr></thead>
+              <tbody id="expenses-list"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+      <section id="goal-page" class="page-section">
+        <header><h2>الهدف المالي</h2></header>
+        <div class="content-container goal-container">
+          <form id="goal-form" class="goal-form">
+            <input type="number" id="monthly-goal-input" placeholder="المبلغ الشهري" required />
+            <button type="submit">حفظ</button>
+          </form>
+          <div class="goal-cards">
+            <div class="goal-card">
+              <i class="fas fa-bullseye"></i>
+              <h3>الهدف الشهري</h3>
+              <p id="current-goal">0</p>
+            </div>
+            <div class="goal-card">
+              <i class="fas fa-coins"></i>
+              <h3>الرصيد الحالي</h3>
+              <p id="current-balance">0</p>
+            </div>
+            <div class="goal-card">
+              <i class="fas fa-percent"></i>
+              <h3>النسبة المحققة</h3>
+              <p id="goal-percent">0%</p>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div id="goal-progress" class="progress-fill"></div>
+          </div>
+        </div>
+      </section>
+      <section id="analysis-page" class="page-section">
+        <header><h2>التحليل المالي</h2></header>
+        <div class="content-container">
+          <canvas id="finance-chart"></canvas>
+        </div>
+      </section>
+      <section id="settings-page" class="page-section">
+        <header><h2>الإعدادات</h2></header>
+        <div class="content-container">
+          <button id="export-json"><i class="fas fa-file-export"></i> تصدير JSON</button>
+          <button id="export-excel"><i class="fas fa-file-excel"></i> تصدير Excel</button>
+          <button id="import-data-btn"><i class="fas fa-file-import"></i> استيراد البيانات</button>
+          <input type="file" id="import-data-input" accept=".json" hidden>
+          <button id="export-pdf"><i class="fas fa-file-pdf"></i> تصدير PDF</button>
+          <button id="reset-data"><i class="fas fa-undo"></i> إعادة تعيين البيانات</button>
+          <div class="theme-settings" style="margin-top:20px;">
+            <label>اختر الثيم:</label>
+            <div id="theme-swatches" class="theme-swatches">
+              <div class="theme-swatch" data-theme="light" style="background-color:#ffffff;"></div>
+              <div class="theme-swatch" data-theme="dark" style="background-color:#1a1a1a;"></div>
+              <div class="theme-swatch" data-theme="blue" style="background-color:#e3f2fd;"></div>
+              <div class="theme-swatch" data-theme="green" style="background-color:#e8f5e9;"></div>
+              <div class="theme-swatch" data-theme="purple" style="background-color:#f3e5f5;"></div>
+              <div class="theme-swatch" data-theme="red" style="background-color:#ffebee;"></div>
+            </div>
+          </div>
+          <div class="currency-settings">
+            <label>اختر العملة:</label>
+            <div class="currency-swatches">
+              <div class="currency-swatch" data-currency="ر.س">ر.س</div>
+              <div class="currency-swatch" data-currency="ج.م">ج.م</div>
+              <div class="currency-swatch" data-currency="$">$</div>
+              <div class="currency-swatch" data-currency="€">€</div>
+              <div class="currency-swatch" data-currency="£">£</div>
+              <div class="currency-swatch" data-currency="¥">¥</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <!-- Modals لإضافة الإيراد والمصروف -->
+  <div id="income-modal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close-btn" data-modal="income-modal">&times;</span>
+      <h3>إضافة إيراد</h3>
+      <div class="parser-wrapper">
+        <button type="button" id="income-parse-btn" class="parser-btn"><i class="fas fa-magic"></i></button>
+        <input type="text" id="income-parser" placeholder="مثال: ايراد اليوم 500" class="parser-input" />
+        <button type="button" id="income-voice-btn" class="voice-btn"><i class="fas fa-microphone"></i></button>
+      </div>
+      <form id="income-form" class="modal-form">
+        <input type="date" id="income-date" required />
+        <input type="number" id="income-amount" placeholder="المبلغ" required />
+        <input type="text" id="income-desc" placeholder="الوصف" />
+        <div class="recurring-option"><input type="checkbox" id="income-recurring"/> دخل شهري ثابت</div>
+        <div class="form-actions">
+          <button type="submit" class="save-btn">حفظ</button>
+          <button type="button" id="income-cancel-btn" class="cancel-btn">إلغاء</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div id="expense-modal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close-btn" data-modal="expense-modal">&times;</span>
+      <h3>إضافة مصروف</h3>
+      <div class="parser-wrapper">
+        <button type="button" id="expense-parse-btn" class="parser-btn"><i class="fas fa-magic"></i></button>
+        <input type="text" id="expense-parser" placeholder="مثال: مصروف اليوم 500" class="parser-input" />
+        <button type="button" id="expense-voice-btn" class="voice-btn"><i class="fas fa-microphone"></i></button>
+      </div>
+      <form id="expense-form" class="modal-form">
+        <input type="date" id="expense-date" required />
+        <input type="number" id="expense-amount" placeholder="المبلغ" required />
+        <input type="text" id="expense-desc" placeholder="الوصف" />
+        <div class="recurring-option"><input type="checkbox" id="expense-recurring"/> التزام شهري ثابت</div>
+        <div class="form-actions">
+          <button type="submit" class="save-btn">حفظ</button>
+          <button type="button" id="expense-cancel-btn" class="cancel-btn">إلغاء</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script src="app.js"></script>
+  <script src="ai/ai.js"></script>
+</body>
+</html>
